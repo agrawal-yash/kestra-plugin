@@ -1,0 +1,10 @@
+id: pokemonFetch
+namespace: company.team
+
+tasks:
+  - id: fetch-pikachu
+    type: io.fss.plugin.pokemon.Fetch
+    pokemon: "pikachu"
+  - id: fetch-gengar
+    type: io.fss.plugin.pokemon.Fetch
+    pokemon: "gengar"

@@ -1,6 +1,5 @@
-package io.kestra.plugin.templates;
+package io.fss.plugin.pokemon;
 
-import io.kestra.core.junit.annotations.ExecuteFlow;
 import io.kestra.core.junit.annotations.KestraTest;
 import io.kestra.core.queues.QueueException;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +12,6 @@ import io.kestra.core.runners.StandAloneRunner;
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
@@ -27,13 +25,28 @@ import static org.hamcrest.Matchers.is;
  * configuration file in `src/test/resources/application.yml` that is only for the full runner
  * test to configure in-memory runner.
  */
-@KestraTest(startRunner = true)
-class ExampleRunnerTest {
+@KestraTest
+class FetchRunnerTest {
+    @Inject
+    protected StandAloneRunner runner;
+
+    @Inject
+    protected RunnerUtils runnerUtils;
+
+    @Inject
+    protected LocalFlowRepositoryLoader repositoryLoader;
+
+    @BeforeEach
+    protected void init() throws IOException, URISyntaxException {
+        repositoryLoader.load(Objects.requireNonNull(FetchRunnerTest.class.getClassLoader().getResource("flows")));
+        this.runner.run();
+    }
+
     @SuppressWarnings("unchecked")
     @Test
-    @ExecuteFlow("flows/example.yaml")
-    void flow(Execution execution) throws TimeoutException, QueueException {
-        assertThat(execution.getTaskRunList(), hasSize(3));
-        assertThat(((Map<String, Object>)execution.getTaskRunList().get(2).getOutputs().get("child")).get("value"), is("task-id"));
+    void flow() throws TimeoutException, QueueException {
+        Execution execution = runnerUtils.runOne(null, "io.fss.plugin", "pokemonFetch");
+
+        assertThat(execution.getTaskRunList(), hasSize(2));
     }
 }

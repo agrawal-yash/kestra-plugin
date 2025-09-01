@@ -1,4 +1,4 @@
-package io.kestra.plugin.templates;
+package io.fss.plugin.pokemon;
 
 import io.kestra.core.exceptions.IllegalVariableEvaluationException;
 import io.kestra.core.models.annotations.Plugin;

@@ -9,6 +9,7 @@ plugins {
     id 'signing'
     id "com.github.ben-manes.versions" version "0.52.0"
     id 'net.researchgate.release' version '3.1.0'
+    id 'maven-publish'
 }
 
 def isBuildSnapshot = version.toString().endsWith("-SNAPSHOT")
@@ -28,8 +29,8 @@ java {
     targetCompatibility = targetJavaVersion
 }
 
-group = "io.kestra.plugin"
-description = 'Plugin template for Kestra'
+group = "io.fss.plugin"
+description = 'Plugin FSS pokemon for Kestra'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
@@ -50,6 +51,8 @@ dependencies {
     annotationProcessor group: "io.kestra", name: "processor", version: kestraVersion
     compileOnly group: "io.kestra", name: "core", version: kestraVersion
     compileOnly group: "io.kestra", name: "script", version: kestraVersion
+
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 }
 
 
@@ -173,8 +176,8 @@ jar {
     manifest {
         attributes(
                 "X-Kestra-Name": project.name,
-                "X-Kestra-Title": "Template",
-                "X-Kestra-Group": project.group + ".templates",
+                "X-Kestra-Title": "Pokemon",
+                "X-Kestra-Group": project.group + ".pokemon",
                 "X-Kestra-Description": project.description,
                 "X-Kestra-Version": project.version
         )

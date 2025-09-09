@@ -51,7 +51,15 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
+      
+      - name: Debug secrets
+        run: |
+          echo "SONATYPE_USER=${{ secrets.SONATYPE_USER }}"
+          echo "SONATYPE_PASSWORD=${{ secrets.SONATYPE_PASSWORD }}"
+          echo "SONATYPE_GPG_KEYID=${{ secrets.SONATYPE_GPG_KEYID }}"
+          echo "SONATYPE_GPG_PASSWORD=${{ secrets.SONATYPE_GPG_PASSWORD }}"
+          echo "SONATYPE_GPG_FILE=${{ secrets.SONATYPE_GPG_FILE }}"
 
       - name: Publish package to Sonatype
         env:
@@ -77,7 +85,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
       - name: Release package to Maven Central
         env:

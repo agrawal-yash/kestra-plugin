@@ -218,3 +218,14 @@ idea {
         downloadSources = true
     }
 }
+
+signing {
+    def signingKey = System.getenv("SONATYPE_GPG_FILE")
+    def signingKeyId = System.getenv("SONATYPE_GPG_KEYID")
+    def signingPassword = System.getenv("SONATYPE_GPG_PASSWORD")
+
+    if (signingKey) {
+        useInMemoryPgpKeys(signingKeyId, new String(Base64.decoder.decode(signingKey)), signingPassword)
+        sign publishing.publications
+    }
+}

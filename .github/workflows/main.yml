@@ -33,6 +33,9 @@ permissions:
   checks: write
   contents: write
   pull-requests: write
+  packages: read
+  workflows: read
+  
 
 jobs:
   check:

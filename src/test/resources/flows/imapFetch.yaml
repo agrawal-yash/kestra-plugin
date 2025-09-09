@@ -1,0 +1,14 @@
+id: imapFetch
+namespace: io.fss.plugin
+
+tasks:
+  - id: fetch-emails
+    type: io.fss.plugin.imap.Fetch
+    host: "imap.gmail.com"
+    port: 993
+    username: "test@example.com"
+    password: "test-password"
+    folder: "INBOX"
+    maxEmails: 5
+    markAsRead: false
+    useSsl: true

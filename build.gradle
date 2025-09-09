@@ -30,7 +30,7 @@ java {
 }
 
 group = "io.fss.plugin"
-description = 'Plugin FSS pokemon for Kestra'
+description = 'Plugin FSS IMAP for Kestra'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
@@ -53,6 +53,11 @@ dependencies {
     compileOnly group: "io.kestra", name: "script", version: kestraVersion
 
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    
+    // JavaMail API for IMAP support
+    implementation 'com.sun.mail:jakarta.mail:2.0.1'
+    implementation 'jakarta.mail:jakarta.mail-api:2.1.2'
+    
 }
 
 
@@ -176,8 +181,8 @@ jar {
     manifest {
         attributes(
                 "X-Kestra-Name": project.name,
-                "X-Kestra-Title": "Pokemon",
-                "X-Kestra-Group": project.group + ".pokemon",
+                "X-Kestra-Title": "IMAP",
+                "X-Kestra-Group": project.group + ".imap",
                 "X-Kestra-Description": project.description,
                 "X-Kestra-Version": project.version
         )

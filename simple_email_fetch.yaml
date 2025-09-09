@@ -1,0 +1,99 @@
+id: simple_email_fetch
+namespace: imap.demo
+description: "Simple workflow to fetch and display recent unread emails using custom IMAP plugin"
+
+variables:
+  # Email Configuration
+  email_username: "22102074.yash@gmail.com"
+  email_password: "wldiapvwdokdedqn"
+  
+  # Processing Settings
+  max_emails_to_fetch: 10
+
+tasks:
+  # Step 1: Fetch recent unread emails
+  - id: fetch_unread_emails
+    type: io.fss.plugin.imap.Fetch
+    host: "imap.gmail.com"
+    port: 993
+    username: "{{ vars.email_username }}"
+    password: "{{ vars.email_password }}"
+    folder: "INBOX"
+    maxEmails: 10
+    markAsRead: false
+    useSsl: true
+
+  # Step 2: Display fetched emails in a formatted way
+  - id: display_emails
+    type: io.kestra.plugin.core.log.Log
+    message: |
+      📧 RECENT UNREAD EMAILS FETCHED
+      ==============================
+      Total emails found: {{ outputs.fetch_unread_emails.totalEmails }}
+      Successfully processed: {{ outputs.fetch_unread_emails.processedCount }}
+      
+      📋 EMAIL DETAILS:
+      {% for email in outputs.fetch_unread_emails.emails %}
+      
+      ✉️  EMAIL #{{ loop.index }}
+      ────────────────────────────────────────────────────
+      📨 From: {{ email.senderEmail }}
+      📝 Subject: {{ email.subject }}
+      📅 Received: {{ email.receivedDate | date('yyyy-MM-dd HH:mm:ss') }}
+      📖 Read Status: {{ email.read ? 'Read' : 'Unread' }}
+      {% if email.attachments|length > 0 %}
+      📎 Attachments: {{ email.attachments | join(', ') }}
+      {% endif %}
+      
+      📄 Body Preview:
+      {% if email.body|length > 200 %}
+      {{ email.body | slice(0, 200) }}...
+      {% else %}
+      {{ email.body }}
+      {% endif %}
+      
+      {% endfor %}
+      
+      ✅ Fetch completed at: {{ execution.startDate | date('yyyy-MM-dd HH:mm:ss') }}
+      
+      ✅ Fetch completed at: {{ execution.startDate | date('yyyy-MM-dd HH:mm:ss') }}
+
+  # Step 3: Create summary statistics
+  - id: email_summary
+    type: io.kestra.plugin.core.log.Log
+    message: |
+      📊 EMAIL FETCH SUMMARY
+      =====================
+      🔍 Search Parameters:
+      • Server: imap.gmail.com
+      • Folder: INBOX  
+      • Max emails: 10
+      • SSL enabled: Yes
+      
+      📈 Results:
+      • Total emails fetched: {{ outputs.fetch_unread_emails.totalEmails }}
+      • Successfully processed: {{ outputs.fetch_unread_emails.processedCount }}
+      
+      {% if outputs.fetch_unread_emails.totalEmails > 0 %}
+      📧 Email Sources:
+      {% for email in outputs.fetch_unread_emails.emails %}
+      • {{ email.senderEmail }} - "{{ email.subject }}"
+      {% endfor %}
+      {% else %}
+      📭 No unread emails found in INBOX
+      {% endif %}
+      
+      🎯 Processing completed successfully!
+
+# Optional: Trigger for automated fetching every 30 minutes
+triggers:
+  # Manual webhook trigger for testing
+  - id: manual_fetch
+    type: io.kestra.plugin.core.trigger.Webhook
+    key: "simple_email_fetch"
+
+  # Optional: Schedule to run every 30 minutes
+  # Uncomment the lines below to enable scheduled fetching
+  # - id: scheduled_fetch
+  #   type: io.kestra.plugin.core.trigger.Schedule
+  #   cron: "0 */30 * * *"  # Every 30 minutes

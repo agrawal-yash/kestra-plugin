@@ -1,12 +1,28 @@
-version: "3.8"
-
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  kestra:
+    image: kestra/kestra:latest
     command: server local
     ports:
       - "8080:8080"
     volumes:
       - ./build/libs/:/app/plugins/
+      - kestra-data:/app/storage
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      KESTRA_CONFIGURATION: |
+        kestra:
+          server:
+            basic-auth:
+              enabled: false
+          repository:
+            type: memory
+          queue:
+            type: memory
+          storage:
+            type: local
+            local:
+              base-path: "/app/storage"
+    restart: unless-stopped
+
+volumes:
+  kestra-data:

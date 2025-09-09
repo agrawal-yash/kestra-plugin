@@ -61,11 +61,11 @@ jobs:
           SONATYPE_GPG_PASSWORD: ${{ secrets.SONATYPE_GPG_PASSWORD }}
           SONATYPE_GPG_FILE: ${{ secrets.SONATYPE_GPG_FILE }}
         run: |
+          mkdir -p ~/.gradle
           echo "signing.keyId=${SONATYPE_GPG_KEYID}" > ~/.gradle/gradle.properties
           echo "signing.password=${SONATYPE_GPG_PASSWORD}" >> ~/.gradle/gradle.properties
-          echo "signing.secretKeyRingFile=${HOME}/.gradle/secring.gpg" >> ~/.gradle/gradle.properties
+          echo "signing.secret at ref 891719e8e8c289ab450cc9fba90f1c2fd61aa246.KeyRingFile=${HOME}/.gradle/secring.gpg" >> ~/.gradle/gradle.properties
           echo ${SONATYPE_GPG_FILE} | base64 -d > ~/.gradle/secring.gpg
-          ./gradlew publishToSonatype
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -87,6 +87,7 @@ jobs:
           SONATYPE_GPG_PASSWORD: ${{ secrets.SONATYPE_GPG_PASSWORD }}
           SONATYPE_GPG_FILE: ${{ secrets.SONATYPE_GPG_FILE }}
         run: |
+          mkdir -p ~/.gradle
           echo "signing.keyId=${SONATYPE_GPG_KEYID}" > ~/.gradle/gradle.properties
           echo "signing.password=${SONATYPE_GPG_PASSWORD}" >> ~/.gradle/gradle.properties
           echo "signing.secretKeyRingFile=${HOME}/.gradle/secring.gpg" >> ~/.gradle/gradle.properties

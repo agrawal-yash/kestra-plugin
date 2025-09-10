@@ -149,10 +149,10 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/agrawal-yash/plugin-fss-imap"
+            url = "https://maven.pkg.github.com/agrawal-yash/kestra-plugin"
             credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR") ?: ""
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN") ?: ""
             }
         }
     }
@@ -163,7 +163,7 @@ publishing {
             pom {
                 name = "${project.name}"
                 description = "${project.description}"
-                url = "https://github.com/agrawal-yash/plugin-fss-imap"
+                url = "https://github.com/agrawal-yash/kestra-plugin"
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
@@ -178,11 +178,23 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:git://github.com/agrawal-yash/plugin-fss-imap.git'
-                    developerConnection = 'scm:git:ssh://github.com:agrawal-yash/plugin-fss-imap.git'
-                    url = 'https://github.com/agrawal-yash/plugin-fss-imap'
+                    connection = 'scm:git:git://github.com/agrawal-yash/kestra-plugin.git'
+                    developerConnection = 'scm:git:ssh://github.com:agrawal-yash/kestra-plugin.git'
+                    url = 'https://github.com/agrawal-yash/kestra-plugin'
                 }
             }
+        }
+    }
+}
+
+// Only configure GitHub Packages repository if credentials are available
+tasks.withType(PublishToMavenRepository) {
+    doFirst {
+        def username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+        def password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        
+        if (!username || !password) {
+            throw new GradleException("GitHub credentials not found. Set GITHUB_ACTOR and GITHUB_TOKEN environment variables or use -Pgpr.user and -Pgpr.key properties.")
         }
     }
 }

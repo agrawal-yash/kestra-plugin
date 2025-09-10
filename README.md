@@ -81,3 +81,82 @@ Apache 2.0 © [Kestra Technologies](https://kestra.io)
 We release new versions every month. Give the [main repository](https://github.com/kestra-io/kestra) a star to stay up to date with the latest releases and get notified about future updates.
 
 ![Star the repo](https://kestra.io/star.gif)
+
+# Kestra FSS IMAP Plugin
+
+A custom Kestra plugin for FSS IMAP operations.
+
+## Installation in Kestra (Docker)
+
+### Step 1: Create GitHub Token
+1. Go to GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. Generate new token with `read:packages` scope
+3. Copy the token
+
+### Step 2: Configure Kestra
+
+Add this to your Kestra `application.yml` or `docker-compose.yml`:
+
+```yaml
+# If using docker-compose.yml environment variables
+environment:
+  GITHUB_USERNAME: "agrawal-yash"
+  GITHUB_TOKEN: "your_github_token_here"
+
+# If using application.yml
+kestra:
+  plugins:
+    repositories:
+      github:
+        url: https://maven.pkg.github.com/agrawal-yash/plugin-fss-imap
+        username: ${GITHUB_USERNAME:agrawal-yash}
+        password: ${GITHUB_TOKEN}
+    configurations:
+      - type: maven
+        repositories:
+          - github
+        dependencies:
+          - group: io.github.agrawal-yash
+            name: plugin-fss-imap
+            version: 1.0.0
+```
+
+### Step 3: Docker Compose Example
+
+```yaml
+version: "3.8"
+services:
+  kestra:
+    image: kestra/kestra:latest
+    environment:
+      GITHUB_USERNAME: "agrawal-yash"
+      GITHUB_TOKEN: "your_github_token_here"
+    volumes:
+      - ./application.yml:/app/application.yml
+    ports:
+      - "8080:8080"
+```
+
+## Development and Publishing
+
+### Building Locally
+```bash
+./gradlew build
+```
+
+### Publishing to GitHub Packages
+```bash
+./gradlew publish
+```
+
+## Usage Example
+
+```yaml
+id: imap-example
+namespace: dev
+
+tasks:
+  - id: imap-task
+    type: io.github.agrawal_yash.imap.YourTaskClass
+    # Add your task properties here
+```
